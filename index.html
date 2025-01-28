@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱心小熊猫</title>
+    <style>
+        body {
+            background-color: pink;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #panda {
+            width: 200px;
+            height: 200px;
+            background-image: url("pandas.png");
+            background-size: cover;
+            position: relative;
+            cursor: pointer;
+        }
+
+        #panda::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+        }
+
+        #panda::after {
+            content: "";
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+        }
+
+        /* 放大缩小动画效果 */
+        #panda.zoom-in {
+            animation: zoomIn 0.5s ease forwards;
+        }
+
+        #panda.zoom-out {
+            animation: zoomOut 0.5s ease forwards;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.5);
+            }
+        }
+
+        @keyframes zoomOut {
+            from {
+                transform: scale(1.5);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        /* 爱心动画 */
+        .heart {
+            position: absolute;
+            background-image: url("heart.png"); /* 替换为你的爱心图片路径 */
+            background-size: cover;
+            animation: fly 3s linear forwards;
+            z-index: 999;
+        }
+
+        @keyframes fly {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 添加音频元素 -->
+    <audio id="myAudio"></audio>
+    <div id="panda" onclick="toggleZoom(this)"></div>
+    <script>
+        function toggleZoom(element) {
+            if (element.classList.contains('zoom-in')) {
+                element.classList.remove('zoom-in');
+                element.classList.add('zoom-out');
+            } else {
+                element.classList.remove('zoom-out');
+                element.classList.add('zoom-in');
+            }
+        }
+
+        const pandaElement = document.getElementById('panda');
+        pandaElement.addEventListener('click', function () {
+            const numHearts = Math.floor(Math.random() * 20) + 10; // 随机生成 10 - 29 个爱心
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+
+                // 随机设置爱心的初始位置在屏幕内
+                const randomX = Math.random() * window.innerWidth;
+                const randomY = Math.random() * window.innerHeight;
+                heart.style.left = randomX + 'px';
+                heart.style.top = randomY + 'px';
+
+                // 随机设置爱心的大小
+                const size = Math.floor(Math.random() * 30) + 20;
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+
+                // 随机设置爱心的动画持续时间
+                const duration = Math.random() * 3 + 2; // 2 - 5 秒
+                heart.style.animationDuration = duration + 's';
+
+                // 随机设置爱心的动画延迟时间
+                const delay = Math.random() * 2;
+                heart.style.animationDelay = delay + 's';
+
+                document.body.appendChild(heart);
+
+                heart.addEventListener('animationend', function () {
+                    heart.remove();
+                });
+            }
+        });
+
+        // 定义音频文件数组
+        const audioFiles = [
+            '暗恋航空.mp3',
+            '思觉失调.mp3',
+            'M8000036KKjo31z22M.mp3',
+			'神爱世人.mp3'
+            // 可以继续添加更多音频文件名
+        ];
+
+        const audio = document.getElementById('myAudio');
+        let currentIndex;
+
+        // 随机选择一首音频播放
+        function playRandomAudio() {
+            currentIndex = Math.floor(Math.random() * audioFiles.length);
+            audio.src = audioFiles[currentIndex];
+            audio.play().catch(error => {
+                console.log('自动播放失败:', error);
+            });
+        }
+
+        // 音频播放结束事件监听器
+        audio.addEventListener('ended', function () {
+            // 切换到下一首音频
+            currentIndex = (currentIndex + 1) % audioFiles.length;
+            audio.src = audioFiles[currentIndex];
+            audio.play().catch(error => {
+                console.log('自动播放失败:', error);
+            });
+        });
+
+        // 页面加载完成后随机播放一首音频
+        window.addEventListener('load', playRandomAudio);
+    </script>
+</body>
+
+</html>
