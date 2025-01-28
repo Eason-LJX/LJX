@@ -151,7 +151,7 @@
             '暗恋航空.mp3',
             '思觉失调.mp3',
             'M8000036KKjo31z22M.mp3',
-			'神爱世人.mp3'
+            '神爱世人.mp3'
             // 可以继续添加更多音频文件名
         ];
 
@@ -164,6 +164,8 @@
             audio.src = audioFiles[currentIndex];
             audio.play().catch(error => {
                 console.log('自动播放失败:', error);
+                // 提示用户点击页面开始播放
+                document.addEventListener('click', startAudioOnUserInteraction);
             });
         }
 
@@ -177,7 +179,16 @@
             });
         });
 
-        // 页面加载完成后随机播放一首音频
+        // 用户交互后开始播放音频
+        function startAudioOnUserInteraction() {
+            audio.play().catch(error => {
+                console.log('手动播放失败:', error);
+            });
+            // 移除点击事件监听器
+            document.removeEventListener('click', startAudioOnUserInteraction);
+        }
+
+        // 页面加载完成后尝试随机播放一首音频
         window.addEventListener('load', playRandomAudio);
     </script>
 </body>
